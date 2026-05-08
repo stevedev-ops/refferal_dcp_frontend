@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Users, Shield, ChevronRight, ChevronDown, Plus, X, Database, Search, User, Smartphone, MapPin, Hash, Star, LayoutDashboard, Network, BarChart3, LogOut, Menu, CheckCircle2, UserCheck, Mail } from "lucide-react";
+import { Users, Shield, ChevronRight, ChevronDown, Plus, X, Database, Search, User, Smartphone, MapPin, Hash, Star, LayoutDashboard, Network, BarChart3, LogOut, Menu, CheckCircle2, UserCheck, Mail, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../lib/api";
 import { toast } from "sonner";
@@ -209,6 +209,7 @@ export default function Admin({ onLogout }) {
   const [hasMoreMembers, setHasMoreMembers] = useState(true);
   const [loadingMoreMembers, setLoadingMoreMembers] = useState(false);
   const [voterStatusFilter, setVoterStatusFilter] = useState("all"); // "all" | "verified" | "unverified"
+  const [downlineFilter, setDownlineFilter] = useState(null); // { id, name, mode: 'direct' | 'all' }
   const [memberSort, setMemberSort] = useState("id"); // "id" | "voter_status"
 
   // Voter Registry States
@@ -307,6 +308,10 @@ export default function Admin({ onLogout }) {
       if (voterStatus !== "all") {
         params.voter_status = voterStatus;
       }
+      if (downlineFilter) {
+        if (downlineFilter.mode === 'direct') params.referred_by = downlineFilter.id;
+        else params.downline_of = downlineFilter.id;
+      }
 
       const { data, error } = await api.getMembers(params);
       if (error) {
@@ -337,7 +342,7 @@ export default function Admin({ onLogout }) {
       }
     }, 400);
     return () => clearTimeout(timer);
-  }, [searchQuery, voterStatusFilter, activeTab, loadRootPage, loadMembersPage]);
+  }, [searchQuery, voterStatusFilter, downlineFilter, activeTab, loadRootPage, loadMembersPage]);
 
   // Initial Fetch
   useEffect(() => {
@@ -902,6 +907,22 @@ export default function Admin({ onLogout }) {
                       </button>
                     ))}
                   </div>
+                  {downlineFilter && (
+                    <div className="flex items-center justify-between bg-dcp-green/5 border border-dcp-green/10 p-3 rounded-xl animate-in fade-in slide-in-from-left-2">
+                      <div className="flex items-center gap-3">
+                        <Network size={16} className="text-dcp-green" />
+                        <p className="text-xs font-bold text-slate-700 uppercase tracking-tight">
+                          Viewing {downlineFilter.mode === 'direct' ? 'Direct Recruits' : 'Full Downline'} of <span className="text-dcp-green font-black">{downlineFilter.name}</span>
+                        </p>
+                      </div>
+                      <button 
+                        onClick={() => { setDownlineFilter(null); setMemberPage(0); }}
+                        className="text-[10px] font-black text-slate-400 hover:text-red-500 uppercase tracking-widest flex items-center gap-1 transition-colors bg-white px-2 py-1 rounded-lg border border-slate-200 shadow-sm"
+                      >
+                        <X size={12} /> Clear
+                      </button>
+                    </div>
+                  )}
                   <div className="flex gap-4 items-center">
                     <div className="relative flex-1">
                       <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
@@ -1056,17 +1077,55 @@ export default function Admin({ onLogout }) {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-black/40 border border-white/5 rounded-2xl p-4">
-                        <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Direct Children</p>
+                      <button 
+                        onClick={() => {
+                          setDownlineFilter({ id: selectedMember.id, name: selectedMember.full_name, mode: 'direct' });
+                          setActiveTab('all');
+                        }}
+                        className="bg-black/40 border border-white/5 rounded-2xl p-4 text-left hover:bg-black/60 transition-all hover:border-dcp-green/30 group"
+                      >
+                        <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-dcp-green transition-colors">Direct Children</p>
                         <p className="text-2xl font-black text-white">{selectedMemberDirectCount}</p>
-                      </div>
-                      <div className="bg-black/40 border border-white/5 border-l-dcp-green/50 rounded-2xl p-4">
-                        <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Downline</p>
+                      </button>
+                      <button 
+                        onClick={() => {
+                          setDownlineFilter({ id: selectedMember.id, name: selectedMember.full_name, mode: 'all' });
+                          setActiveTab('all');
+                        }}
+                        className="bg-black/40 border border-white/5 border-l-dcp-green/50 rounded-2xl p-4 text-left hover:bg-black/60 transition-all hover:border-dcp-green/30 group"
+                      >
+                        <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-dcp-green transition-colors">Total Downline</p>
                         <p className="text-2xl font-black text-white">{selectedMemberNetworkSize}</p>
-                      </div>
+                      </button>
                     </div>
 
                     <div className="pt-6 border-t border-slate-800 space-y-4">
+                      <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-3 flex items-center gap-2">
+                          <Download size={14} className="text-dcp-green" /> 
+                          Export Downline Report
+                        </p>
+                        <div className="grid grid-cols-3 gap-2">
+                          <button 
+                            onClick={() => api.exportMemberDownline(selectedMember.id, selectedMember.full_name, 'all')}
+                            className="py-2.5 bg-white/10 hover:bg-white/20 rounded-xl text-[9px] font-black text-white uppercase tracking-widest transition-all border border-white/5"
+                          >
+                            Full List
+                          </button>
+                          <button 
+                            onClick={() => api.exportMemberDownline(selectedMember.id, selectedMember.full_name, 'verified')}
+                            className="py-2.5 bg-dcp-green/10 hover:bg-dcp-green/20 rounded-xl text-[9px] font-black text-dcp-green uppercase tracking-widest transition-all border border-dcp-green/30"
+                          >
+                            Verified
+                          </button>
+                          <button 
+                            onClick={() => api.exportMemberDownline(selectedMember.id, selectedMember.full_name, 'unverified')}
+                            className="py-2.5 bg-amber-500/10 hover:bg-amber-500/20 rounded-xl text-[9px] font-black text-amber-500 uppercase tracking-widest transition-all border border-amber-500/30"
+                          >
+                            Pending
+                          </button>
+                        </div>
+                      </div>
                       <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.25em] mb-3">Referral Lineage</p>
                       <div className="grid gap-3">
                         <LineageCard

@@ -77,4 +77,26 @@ export const api = {
   
   createInvite: (data) => 
     request('/invites', { body: data }),
+    
+  exportMemberDownline: async (memberId, name = 'downline', status = 'all') => {
+    const token = localStorage.getItem('dcp_token');
+    const response = await fetch(`${API_URL}/members/${memberId}/export?status=${status}`, {
+      headers: {
+        'Authorization': `Token ${token}`
+      }
+    });
+    if (response.ok) {
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `downline_${status}_${name.replace(/\s+/g, '_')}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      return { error: null };
+    } else {
+      return { error: 'Failed to download export' };
+    }
+  },
 };
