@@ -179,7 +179,6 @@ function App() {
         <footer className="relative z-10 py-12 border-t border-white/5 bg-black/40 backdrop-blur-sm text-center mt-auto">
           <div className="max-w-4xl mx-auto px-6 space-y-4">
             <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.3em]">&copy; 2026 Democracy for Citizens Party (DCP)</p>
-            <p className="text-xs text-gray-600 max-w-lg mx-auto leading-relaxed">Authorized by Hon. Said Karani. Building a movement for accountability in Embakasi and across Kenya.</p>
             <div className="flex justify-center gap-6 pt-4">
               <a href="#" className="text-[10px] font-bold text-gray-500 hover:text-dcp-green transition-colors uppercase tracking-widest">Privacy</a>
               <a href="#" className="text-[10px] font-bold text-gray-500 hover:text-dcp-green transition-colors uppercase tracking-widest">Terms</a>

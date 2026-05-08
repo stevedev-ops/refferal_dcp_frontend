@@ -216,7 +216,7 @@ export default function RegistrationForm({ referrerId, inviteToken, onSuccess, i
               className="mt-1 w-5 h-5 accent-dcp-green cursor-pointer"
             />
             <label htmlFor="consent" className="text-[11px] leading-relaxed text-slate-600 cursor-pointer select-none">
-              I confirm I wish to be a member of the <span className="text-slate-900 font-bold">Democracy for Citizens Party (DCP)</span> and authorize Hon. Said Karani's team to contact me regarding official party activities and mobilization.
+              I confirm I wish to be a member of the <span className="text-slate-900 font-bold">Democracy for Citizens Party (DCP)</span> and authorize the party to contact me regarding official party activities and mobilization.
             </label>
           </div>
           {errors.consent && <p className="text-red-500 text-[10px] mt-1.5 ml-1 font-bold">{errors.consent.message}</p>}

@@ -139,7 +139,7 @@ export default function Landing({ onLogin, referrerId, inviteToken }) {
 
         <footer className="mt-12 text-center border-t border-slate-200 pt-8 pb-10">
            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-loose">
-              © 2026 Democracy for Citizens Party (DCP) • Official Enrollment Portal • Hon. Said Karani
+              © 2026 Democracy for Citizens Party (DCP) • Official Enrollment Portal
            </p>
            <p className="text-[9px] font-medium text-slate-300 uppercase tracking-[0.3em] mt-2">
               SKIZA WAKENYA - Empowering The Grassroots
