@@ -38,7 +38,7 @@ function Pagination({ page, totalPages, onPrev, onNext, totalItems, pageSize }) 
   );
 }
 
-export default function Reports({ memberId }) {
+export default function Reports({ memberId, onSelectWard }) {
   const [reportMode, setReportMode] = useState('all'); // all | verified | unverified
   const [totalMembers, setTotalMembers] = useState(0);
   const [wardSummary, setWardSummary] = useState([]);
@@ -202,9 +202,13 @@ export default function Reports({ memberId }) {
                   {wardChartSlice.map((item) => {
                     const pct = totalMembers > 0 ? Math.round((item.count / totalMembers) * 100) : 0;
                     return (
-                      <div key={item.ward} className="p-4 bg-slate-50 rounded-3xl border border-slate-200">
+                      <div 
+                        key={item.ward} 
+                        onClick={() => onSelectWard?.(item.ward)}
+                        className="p-4 bg-slate-50 rounded-3xl border border-slate-200 cursor-pointer hover:border-dcp-green/50 hover:bg-slate-100 transition-all group"
+                      >
                         <div className="flex items-center justify-between mb-2">
-                          <p className="font-black text-slate-900">{item.ward}</p>
+                          <p className="font-black text-slate-900 group-hover:text-dcp-green transition-colors">{item.ward}</p>
                           <span className="text-sm font-black text-slate-700">{item.count} <span className="text-slate-400 font-bold text-xs">({pct}%)</span></span>
                         </div>
                         <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
@@ -273,11 +277,15 @@ export default function Reports({ memberId }) {
                   const globalIdx = wardListPage * WARD_LIST_PAGE_SIZE + idx;
                   const pct = totalMembers > 0 ? Math.round((item.count / totalMembers) * 100) : 0;
                   return (
-                    <div key={item.ward} className="flex items-center gap-4 p-4 rounded-3xl bg-slate-50 border border-slate-200">
+                    <div 
+                      key={item.ward} 
+                      onClick={() => onSelectWard?.(item.ward)}
+                      className="flex items-center gap-4 p-4 rounded-3xl bg-slate-50 border border-slate-200 cursor-pointer hover:border-dcp-green/50 hover:bg-slate-100 transition-all group"
+                    >
                       <span className="text-[10px] font-black text-slate-400 w-5 shrink-0">#{globalIdx + 1}</span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1.5">
-                          <p className="font-black text-slate-900 truncate">{item.ward}</p>
+                          <p className="font-black text-slate-900 truncate group-hover:text-dcp-green transition-colors">{item.ward}</p>
                           <span className="text-sm font-black text-slate-700 ml-3 shrink-0">{item.count} <span className="text-slate-400 font-bold text-xs">({pct}%)</span></span>
                         </div>
                         <div className="w-full bg-slate-200 h-1 rounded-full overflow-hidden">

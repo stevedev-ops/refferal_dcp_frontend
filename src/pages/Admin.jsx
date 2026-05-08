@@ -211,6 +211,7 @@ export default function Admin({ onLogout }) {
   const [voterStatusFilter, setVoterStatusFilter] = useState("all"); // "all" | "verified" | "unverified"
   const [downlineFilter, setDownlineFilter] = useState(null); // { id, name, mode: 'direct' | 'all' }
   const [memberSort, setMemberSort] = useState("id"); // "id" | "voter_status"
+  const [wardFilter, setWardFilter] = useState("");
 
   // Voter Registry States
   const [voterRecords, setVoterRecords] = useState([]);
@@ -308,6 +309,9 @@ export default function Admin({ onLogout }) {
       if (voterStatus !== "all") {
         params.voter_status = voterStatus;
       }
+      if (wardFilter) {
+        params.ward = wardFilter;
+      }
       if (downlineFilter) {
         if (downlineFilter.mode === 'direct') params.referred_by = downlineFilter.id;
         else params.downline_of = downlineFilter.id;
@@ -330,7 +334,7 @@ export default function Admin({ onLogout }) {
       }
     } catch (err) { console.error(err); toast.error("Error loading recruits"); }
     finally { setLoadingMoreMembers(false); }
-  }, [navigate, memberSort, downlineFilter]);
+  }, [navigate, memberSort, downlineFilter, wardFilter]);
 
   // Debounced search effect
   useEffect(() => {
@@ -342,7 +346,7 @@ export default function Admin({ onLogout }) {
       }
     }, 400);
     return () => clearTimeout(timer);
-  }, [searchQuery, voterStatusFilter, downlineFilter, activeTab, loadRootPage, loadMembersPage]);
+  }, [searchQuery, voterStatusFilter, downlineFilter, wardFilter, activeTab, loadRootPage, loadMembersPage]);
 
   // Initial Fetch
   useEffect(() => {
@@ -763,11 +767,19 @@ export default function Admin({ onLogout }) {
                       ) : wardSnapshot.map((w, i) => {
                         const pct = totalRegistered > 0 ? Math.round((w.count / totalRegistered) * 100) : 0;
                         return (
-                          <div key={w.ward}>
+                          <div 
+                            key={w.ward} 
+                            onClick={() => {
+                              setWardFilter(w.ward);
+                              setActiveTab('all');
+                              setMemberPage(0);
+                            }}
+                            className="cursor-pointer group"
+                          >
                             <div className="flex items-center justify-between mb-1.5">
                               <div className="flex items-center gap-2">
                                 <span className="text-[10px] font-black text-slate-400 w-4">#{i + 1}</span>
-                                <p className="font-black text-slate-900 text-xs uppercase tracking-widest">{w.ward}</p>
+                                <p className="font-black text-slate-900 text-xs uppercase tracking-widest group-hover:text-dcp-green transition-colors">{w.ward}</p>
                               </div>
                               <span className="text-xs font-black text-slate-700">{w.count.toLocaleString()} <span className="text-slate-400 font-bold">({pct}%)</span></span>
                             </div>
@@ -793,7 +805,11 @@ export default function Admin({ onLogout }) {
               </div>
             ) : activeTab === "analytics" ? (
               <div className="h-full w-full overflow-y-auto custom-scrollbar rounded-3xl bg-white border border-slate-200 shadow-sm relative z-0">
-                <Reports />
+                <Reports onSelectWard={(w) => {
+                  setWardFilter(w);
+                  setActiveTab('all');
+                  setMemberPage(0);
+                }} />
               </div>
             ) : activeTab === "voter-registry" ? (
               <div className="bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col overflow-hidden h-[calc(100vh-12rem)] animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -907,6 +923,22 @@ export default function Admin({ onLogout }) {
                       </button>
                     ))}
                   </div>
+                  {wardFilter && (
+                    <div className="flex items-center justify-between bg-amber-500/5 border border-amber-500/10 p-3 rounded-xl animate-in fade-in slide-in-from-left-2">
+                      <div className="flex items-center gap-3">
+                        <MapPin size={16} className="text-amber-500" />
+                        <p className="text-xs font-bold text-slate-700 uppercase tracking-tight">
+                          Viewing Members in Ward: <span className="text-amber-600 font-black">{wardFilter}</span>
+                        </p>
+                      </div>
+                      <button 
+                        onClick={() => { setWardFilter(""); setMemberPage(0); }}
+                        className="text-[10px] font-black text-slate-400 hover:text-red-500 uppercase tracking-widest flex items-center gap-1 transition-colors bg-white px-2 py-1 rounded-lg border border-slate-200 shadow-sm"
+                      >
+                        <X size={12} /> Clear
+                      </button>
+                    </div>
+                  )}
                   {downlineFilter && (
                     <div className="flex items-center justify-between bg-dcp-green/5 border border-dcp-green/10 p-3 rounded-xl animate-in fade-in slide-in-from-left-2">
                       <div className="flex items-center gap-3">
