@@ -330,7 +330,7 @@ export default function Admin({ onLogout }) {
       }
     } catch (err) { console.error(err); toast.error("Error loading recruits"); }
     finally { setLoadingMoreMembers(false); }
-  }, [navigate]);
+  }, [navigate, memberSort, downlineFilter]);
 
   // Debounced search effect
   useEffect(() => {
