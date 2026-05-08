@@ -202,6 +202,7 @@ export default function Dashboard({ memberId, onLogout }) {
   const [referralCount, setReferralCount] = useState(0);
   const [networkSize, setNetworkSize] = useState(0);
   const [networkDepth, setNetworkDepth] = useState(0);
+  const [tier, setTier] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
@@ -217,6 +218,7 @@ export default function Dashboard({ memberId, onLogout }) {
       setReferralCount(insights.direct_invites || 0);
       setNetworkSize(insights.network_size || 0);
       setNetworkDepth(insights.network_depth || (insights.tier - 1));
+      setTier(insights.tier || 1);
     } catch (err) {
       console.error("Dashboard data error:", err);
       setError(true);
@@ -342,21 +344,36 @@ export default function Dashboard({ memberId, onLogout }) {
         {/* ── Primary Action Center ────────────────────────────────── */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <motion.button
-            whileHover={{ y: -4 }}
+            whileHover={tier < 3 ? { y: -4 } : {}}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            onClick={() => navigate("/enroll")}
-            className="group relative overflow-hidden rounded-[2rem] p-8 bg-dcp-green text-white shadow-lg shadow-dcp-green/20 text-left border border-dcp-green/30"
+            onClick={() => tier < 3 ? navigate("/enroll") : null}
+            disabled={tier >= 3}
+            className={`group relative overflow-hidden rounded-[2rem] p-8 text-left border transition-all ${
+              tier < 3 
+                ? "bg-dcp-green text-white shadow-lg shadow-dcp-green/20 border-dcp-green/30 cursor-pointer" 
+                : "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed grayscale"
+            }`}
           >
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-              <Star size={80} strokeWidth={3} />
+              {tier < 3 ? <Star size={80} strokeWidth={3} /> : <Lock size={80} strokeWidth={3} />}
             </div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] mb-2 text-white/70">Expansion</p>
-            <h3 className="text-2xl font-black mb-3 italic uppercase">Add New Members</h3>
-            <p className="text-sm text-white/80 leading-relaxed font-medium">Use your authority to register and onboard new supporters to the movement.</p>
-            <div className="mt-6 flex items-center gap-2 text-xs font-black uppercase tracking-widest bg-black/10 w-fit px-4 py-2 rounded-full">
-              Open Recruitment Tools →
+            <p className={`text-[10px] font-black uppercase tracking-[0.3em] mb-2 ${tier < 3 ? "text-white/70" : "text-slate-400"}`}>
+              {tier < 3 ? "Expansion" : "Recruitment Locked"}
+            </p>
+            <h3 className="text-2xl font-black mb-3 italic uppercase">
+              {tier < 3 ? "Add New Members" : "Depth Limit Reached"}
+            </h3>
+            <p className={`text-sm leading-relaxed font-medium ${tier < 3 ? "text-white/80" : "text-slate-500"}`}>
+              {tier < 3 
+                ? "Use your authority to register and onboard new supporters to the movement."
+                : "You have reached the maximum recruitment depth. Your role is now focused on leadership and reporting."}
+            </p>
+            <div className={`mt-6 flex items-center gap-2 text-xs font-black uppercase tracking-widest w-fit px-4 py-2 rounded-full ${
+              tier < 3 ? "bg-black/10" : "bg-slate-200 text-slate-400"
+            }`}>
+              {tier < 3 ? "Open Recruitment Tools →" : "Recruitment Disabled"}
             </div>
           </motion.button>
 
