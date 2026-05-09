@@ -271,14 +271,18 @@ export default function Admin({ onLogout }) {
   }, []);
 
   // Fetch Roots Page
-  const loadRootPage = useCallback(async (pageIdx, q = "") => {
+  const loadRootPage = useCallback(async (pageIdx, q = "", voterStatus = "all") => {
     setLoadingMoreRoots(true);
     try {
-      const { data, error } = await api.getMembers({ 
+      const params = { 
         referred_by: 'null', 
         search: q,
         page: pageIdx + 1
-      });
+      };
+      if (voterStatus !== "all") {
+        params.voter_status = voterStatus;
+      }
+      const { data, error } = await api.getMembers(params);
       if (error) {
         if (error.message?.includes('401') || error.message?.includes('403')) {
           navigate('/');
@@ -334,13 +338,13 @@ export default function Admin({ onLogout }) {
       }
     } catch (err) { console.error(err); toast.error("Error loading recruits"); }
     finally { setLoadingMoreMembers(false); }
-  }, [navigate, memberSort, downlineFilter, wardFilter]);
+  }, [navigate, memberSort, downlineFilter, wardFilter, voterStatusFilter]);
 
   // Debounced search effect
   useEffect(() => {
     const timer = setTimeout(() => {
       if (activeTab === "mobilizers") {
-        loadRootPage(0, searchQuery);
+        loadRootPage(0, searchQuery, voterStatusFilter);
       } else if (activeTab === "all") {
         loadMembersPage(0, searchQuery, voterStatusFilter);
       }
