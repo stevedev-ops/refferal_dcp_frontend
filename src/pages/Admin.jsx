@@ -914,7 +914,12 @@ export default function Admin({ onLogout }) {
                     ].map(tab => (
                       <button
                         key={tab.id}
-                        onClick={() => { setVoterStatusFilter(tab.id); setMemberPage(0); }}
+                        onClick={() => { 
+                          setVoterStatusFilter(tab.id); 
+                          setMemberPage(0);
+                          setRoots([]);
+                          setAllMembers([]);
+                        }}
                         className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
                           voterStatusFilter === tab.id 
                             ? 'bg-white text-slate-900 shadow-sm' 
