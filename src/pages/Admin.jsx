@@ -352,18 +352,16 @@ export default function Admin({ onLogout }) {
     return () => clearTimeout(timer);
   }, [searchQuery, voterStatusFilter, downlineFilter, wardFilter, activeTab, loadRootPage, loadMembersPage]);
 
-  // Initial Fetch
+  // Initial Fetch & Sync
   useEffect(() => {
     loadTotalRegistered();
-    loadRootPage(0, "");
-    loadMembersPage(0, "", voterStatusFilter);
     loadOverviewData();
     
     // Fetch current admin profile
     api.getMe().then(({ data }) => {
       if (data) setCurrentUser(data);
     });
-  }, [loadTotalRegistered, loadRootPage, loadMembersPage, loadOverviewData, voterStatusFilter]);
+  }, [loadTotalRegistered, loadOverviewData]);
 
   // Fetch Voter Records
   const loadVoterRecordsPage = useCallback(async (pageIdx, q = "", ward = "") => {
