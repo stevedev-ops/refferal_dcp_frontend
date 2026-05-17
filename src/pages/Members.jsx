@@ -106,10 +106,10 @@ export default function Members({ memberId, isAdmin = false }) {
               <h1 className="text-5xl font-black uppercase italic tracking-tight leading-none mb-4">
                 {selectedMember.full_name}
               </h1>
-              <div className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-xl w-fit">
-                <div className="w-2 h-2 rounded-full bg-dcp-green animate-pulse" />
+              <div className={`flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-xl w-fit ${selectedMember.is_voter_verified ? '' : 'opacity-80'}`}>
+                <div className={`w-2 h-2 rounded-full animate-pulse ${selectedMember.is_voter_verified ? 'bg-dcp-green' : 'bg-orange-500'}`} />
                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">
-                  Status: Verified Member
+                  Status: {selectedMember.is_voter_verified ? 'Verified Member' : 'Unverified Member'}
                 </span>
               </div>
             </div>
@@ -172,19 +172,35 @@ export default function Members({ memberId, isAdmin = false }) {
               </div>
             </div>
 
-            <div className="bg-dcp-green/10 border border-dcp-green/20 p-6 rounded-2xl flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-dcp-green flex items-center justify-center text-white">
-                <CheckCircle size={20} />
+            {selectedMember.is_voter_verified ? (
+              <div className="bg-dcp-green/10 border border-dcp-green/20 p-6 rounded-2xl flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-dcp-green flex items-center justify-center text-white">
+                  <CheckCircle size={20} />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-white uppercase tracking-widest">
+                    HQ Verification Active
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                    This member is eligible for tiered rewards.
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs font-black text-white uppercase tracking-widest">
-                  HQ Verification Active
-                </p>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                  This member is eligible for tiered rewards.
-                </p>
+            ) : (
+              <div className="bg-orange-500/10 border border-orange-500/20 p-6 rounded-2xl flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white">
+                  <Hash size={20} />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-white uppercase tracking-widest">
+                    Pending Verification
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                    This member's details are pending IEBC verification.
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </section>
         </div>
       </div>

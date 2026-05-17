@@ -86,7 +86,7 @@ export default function RegistrationForm({ referrerId, inviteToken, onSuccess, i
           <p className="text-slate-500 font-medium text-sm">Official membership registration for Democracy for Citizens Party.</p>
         </header>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" autoComplete="off">
           <section className="space-y-4">
             <h3 className="label-official border-b border-slate-100 pb-2 mb-4">A. Identity Information</h3>
             
@@ -97,6 +97,7 @@ export default function RegistrationForm({ referrerId, inviteToken, onSuccess, i
                     {...register("firstName")}
                     className="input-official pl-12"
                     placeholder="First Name (As per ID Card)"
+                    autoComplete="off"
                   />
                   {errors.firstName && <p className="text-red-500 text-[10px] mt-1.5 ml-1 font-bold">{errors.firstName.message}</p>}
                 </div>
@@ -107,6 +108,7 @@ export default function RegistrationForm({ referrerId, inviteToken, onSuccess, i
                     {...register("secondName")}
                     className="input-official pl-12"
                     placeholder="Second Name (As per ID Card)"
+                    autoComplete="off"
                   />
                   {errors.secondName && <p className="text-red-500 text-[10px] mt-1.5 ml-1 font-bold">{errors.secondName.message}</p>}
                 </div>
@@ -117,6 +119,7 @@ export default function RegistrationForm({ referrerId, inviteToken, onSuccess, i
                     {...register("lastName")}
                     className="input-official pl-12"
                     placeholder="Last Name (Optional)"
+                    autoComplete="off"
                   />
                 </div>
               </div>
@@ -128,6 +131,7 @@ export default function RegistrationForm({ referrerId, inviteToken, onSuccess, i
                   {...register("phone")}
                   className="input-official pl-12"
                   placeholder="+254 7XX ..."
+                  autoComplete="off"
                 />
                 {errors.phone && <p className="text-red-500 text-[10px] mt-1.5 ml-1 font-bold">{errors.phone.message}</p>}
               </div>
@@ -138,6 +142,7 @@ export default function RegistrationForm({ referrerId, inviteToken, onSuccess, i
                   {...register("email")}
                   className="input-official pl-12"
                   placeholder="Email Address"
+                  autoComplete="off"
                 />
                 {errors.email && <p className="text-red-500 text-[10px] mt-1.5 ml-1 font-bold">{errors.email.message}</p>}
               </div>
@@ -148,6 +153,7 @@ export default function RegistrationForm({ referrerId, inviteToken, onSuccess, i
                   {...register("nationalId")}
                   className="input-official pl-12"
                   placeholder="National ID Number"
+                  autoComplete="off"
                 />
                 {errors.nationalId && <p className="text-red-500 text-[10px] mt-1.5 ml-1 font-bold">{errors.nationalId.message}</p>}
               </div>
@@ -158,6 +164,7 @@ export default function RegistrationForm({ referrerId, inviteToken, onSuccess, i
                   {...register("yob")}
                   className="input-official pl-12"
                   placeholder="Year of Birth (YYYY)"
+                  autoComplete="off"
                 />
                 {errors.yob && <p className="text-red-500 text-[10px] mt-1.5 ml-1 font-bold">{errors.yob.message}</p>}
               </div>
