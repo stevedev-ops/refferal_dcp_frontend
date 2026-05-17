@@ -16,6 +16,7 @@ const schema = z.object({
   email: z.string().email("Enter a valid email address"),
   phone: z.string().regex(/^\+254\d{9}$/, "Use format +2547XXXXXXXX"),
   nationalId: z.string().min(7, "Valid ID number is required"),
+  gender: z.enum(["Male", "Female"], { required_error: "Please select your gender" }),
   yob: z.string().regex(/^(19|20)\d{2}$/, "Enter a valid 4-digit year").refine((year) => {
     const age = new Date().getFullYear() - parseInt(year);
     return age >= 18;
@@ -51,6 +52,7 @@ export default function RegistrationForm({ referrerId, inviteToken, onSuccess, i
         phone: data.phone,
         national_id: data.nationalId,
         email: data.email,
+        gender: data.gender,
         yob: parseInt(data.yob),
         ward: data.ward,
         polling_station: data.pollingCenter,
@@ -167,6 +169,20 @@ export default function RegistrationForm({ referrerId, inviteToken, onSuccess, i
                   autoComplete="off"
                 />
                 {errors.yob && <p className="text-red-500 text-[10px] mt-1.5 ml-1 font-bold">{errors.yob.message}</p>}
+              </div>
+
+              <div className="relative md:col-span-2">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-dcp-green transition-colors" />
+                <select
+                  {...register("gender")}
+                  className="input-official pl-12 bg-transparent appearance-none"
+                  defaultValue=""
+                >
+                  <option value="" disabled>Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+                {errors.gender && <p className="text-red-500 text-[10px] mt-1.5 ml-1 font-bold">{errors.gender.message}</p>}
               </div>
             </div>
           </section>
