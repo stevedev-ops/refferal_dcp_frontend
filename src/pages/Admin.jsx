@@ -1063,7 +1063,7 @@ export default function Admin({ onLogout }) {
                         else loadMembersPage(memberPage + 1, searchQuery);
                       }}
                       disabled={activeTab === "mobilizers" ? loadingMoreRoots : loadingMoreMembers}
-                      className="px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-[0.3em] border border-slate-200 bg-white hover:bg-slate-50 transition disabled:opacity-50"
+                      className="px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-[0.3em] bg-slate-900 text-white hover:bg-slate-800 transition shadow-xl shadow-slate-900/20 disabled:opacity-50 active:scale-95"
                     >
                       {activeTab === "mobilizers" 
                         ? (loadingMoreRoots ? "Loading..." : "Load more mobilizers")
