@@ -9,6 +9,7 @@ import Admin from './pages/Admin';
 import Enrollment from './pages/Enrollment';
 import Login from './pages/Login';
 import { api } from "./lib/api";
+import ReloadPrompt from "./components/ReloadPrompt";
 
 function App() {
   const [memberId, setMemberId] = useState(() => localStorage.getItem("dcp_member_id"));
@@ -127,6 +128,7 @@ function App() {
   return (
     <div className={`flex flex-col min-h-screen w-full relative overflow-x-hidden font-sans transition-colors duration-500 ${isAdmin || isLanding || isLoginPage ? 'bg-dcp-black text-white' : 'bg-slate-50 text-slate-900'}`}>
       <Toaster position="top-center" richColors theme={isAdmin || isLanding || isLoginPage ? "dark" : "light"} />
+      <ReloadPrompt />
 
       {showMemberNav && (
         <header className="relative z-20 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
